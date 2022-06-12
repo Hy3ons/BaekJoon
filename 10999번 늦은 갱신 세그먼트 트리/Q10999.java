@@ -1,3 +1,8 @@
+    /*
+    3월동안 배운 객체의 개념을 다 끌어내어 해당 문제를 풀어내는 tree 클래스를 정의하였다.
+    */
+
+
 package SegmentTree;
 
 import java.io.BufferedReader;
