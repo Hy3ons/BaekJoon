@@ -7,14 +7,12 @@
     총 연산량은 2 log n 이 된다. n 번반복 하면 O(NlogN) 이다.
     */
 
-
-package SegmentTree;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.StringTokenizer;
+
 class Tree {
     private long[] tree, lazy;
     private int leftIdx, rightIdx, start;
