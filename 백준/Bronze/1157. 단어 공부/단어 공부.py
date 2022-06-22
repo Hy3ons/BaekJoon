@@ -1,13 +1,11 @@
-def func (c) :
-    return int(c - ord('A'))
-
 def main (str) :
     list = [0 for i in range(26)]
     ms = -2100000000
 
     for i in range(len(str)):
-        list[func(ord(str[i]))] += 1
-        ms = max(ms, list[func(ord(str[i]))])
+        index = ord(str[i])-ord('A')
+        list[index] += 1
+        ms = max(ms, list[index])
 
     answer = True
     index = -1
@@ -23,6 +21,5 @@ def main (str) :
 
     print(chr(ord('A')+index))
 
-str = input()
-str = str.upper()
+str = input().upper()
 main(str)
