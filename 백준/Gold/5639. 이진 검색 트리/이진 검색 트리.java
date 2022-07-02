@@ -1,4 +1,5 @@
-import java.time.temporal.Temporal;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.Scanner;
 
 class Tree {
@@ -6,44 +7,46 @@ class Tree {
     Tree right;
     int value;
 
-    public static Tree update (Tree node, int value) {
-        if (node==null) {
-            node = new Tree();
-            node.value = value;
-            return node;
-        }
-
-        if (node.value<value) {
-            Tree temp = update(node.right, value);
-            if (temp!=null) node.right = temp;
-        }
-        else {
-            Tree temp = update(node.left, value);
-            if (temp!=null) node.left = temp;
-        }
-        return null;
+    Tree (int value) {
+        this.value = value;
     }
 
+    public static void update (Tree node, int value) {
+        if (node.value<value) {
+            if (node.right==null) {
+                node.right = new Tree(value);
+                return;
+            }
+            update(node.right, value);
+        } else {
+            if (node.left==null) {
+                node.left = new Tree(value);
+                return;
+            }
+            update(node.left, value);
+        }
+    }
 }
 
 public class Main {
     public static void main(String[] args) throws Exception {
-        Scanner sc = new Scanner(System.in);
-        Tree tree = null;
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        Tree tree = new Tree(Integer.parseInt(br.readLine()));
+        String input = "";
 
-        while(sc.hasNextLine()) {
-            int value = Integer.parseInt(sc.nextLine());
-            Tree temp = Tree.update(tree, value);
-            if (temp!=null) tree = temp;
+        while((input = br.readLine())!=null) {
+            int value = Integer.parseInt(input);
+            Tree.update(tree, value);
         }
 
         out(tree);
     }
     public static void out (Tree node) {
-        if (node==null) return;
+        if (node.left!=null)
+            out(node.left);
+        if (node.right!=null)
+            out(node.right);
 
-        out(node.left);
-        out(node.right);
         System.out.println(node.value);
     }
 }
