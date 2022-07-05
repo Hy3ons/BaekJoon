@@ -38,8 +38,7 @@ class Monster extends Entity {
 
 }
 class Player extends Entity {
-    int nowExp, goalExp=5, level=1;
-    Pocket[] pockets = new Pocket[4];
+    int nowExp, goalExp=5, level=1, pocket;
     Weapon wp;
     Armor ar;
     Location start;
@@ -74,18 +73,9 @@ class Player extends Entity {
             ar = (Armor) it;
         } else {
             Pocket p = (Pocket) it;
-            for (int i=0;i<4;i++) {
-                if (pockets[i]!=null) {
-                    if (pockets[i].type.equals(p.type)) {
-                        return;
-                    }
-                }
-            }
-
-            for (int i=0;i<4;i++) {
-                if (pockets[i]==null) {
-                    pockets[i] = p;
-                    return;
+            if (Integer.bitCount(pocket)<4) {
+                if ((pocket&(1<<p.type))==0) {
+                    pocket |= 1<<p.type;
                 }
             }
         }
@@ -102,65 +92,26 @@ class Player extends Entity {
     }
 
     public boolean existRe () {
-        for (int i=0;i<4;i++) {
-            if (pockets[i]==null) continue;
-
-            if (pockets[i].type.equals("RE")) {
-                pockets[i] = null;
-                return true;
-            }
+        if ((pocket&(1<<1))!=0) {
+            pocket &= ~(1<<1);
+            return true;
         }
         return false;
     }
     public boolean existDX () {
-        for (int i=0;i<4;i++) {
-            if (pockets[i]==null) continue;
-
-            if (pockets[i].type.equals("DX")) {
-                return true;
-            }
-        }
-        return false;
+        return (pocket&(1<<4)) != 0;
     }
     public boolean existHU () {
-        for (int i=0;i<4;i++) {
-            if (pockets[i]==null) continue;
-
-            if (pockets[i].type.equals("HU")) {
-                return true;
-            }
-        }
-        return false;
+        return (pocket&(1<<5)) != 0;
     }
     public boolean existCO () {
-        for (int i=0;i<4;i++) {
-            if (pockets[i]==null) continue;
-
-            if (pockets[i].type.equals("CO")) {
-                return true;
-            }
-        }
-        return false;
+        return (pocket&(1<<2)) != 0;
     }
     public boolean existEX () {
-        for (int i=0;i<4;i++) {
-            if (pockets[i]==null) continue;
-
-            if (pockets[i].type.equals("EX")) {
-                return true;
-            }
-        }
-        return false;
+        return (pocket&(1<<3)) != 0;
     }
     public boolean existHR () {
-        for (int i=0;i<4;i++) {
-            if (pockets[i]==null) continue;
-
-            if (pockets[i].type.equals("HR")) {
-                return true;
-            }
-        }
-        return false;
+        return (pocket&1) != 0;
     }
     public int getArmor () {
         int result = ar == null ? 0 : ar.armor;
@@ -199,10 +150,29 @@ class Armor extends Item {
     }
 }
 class Pocket extends Item {
-    String type;
+    int type;
+    public static int changer (String type) {
+        switch (type) {
+            case "HR" :
+                return 0;
+            case "RE" :
+                return 1;
+            case "CO" :
+                return 2;
+            case "EX" :
+                return 3;
+            case "DX" :
+                return 4;
+            case "HU" :
+                return 5;
+            case "CU" :
+                return 6;
+        }
+        return -1;
+    }
     Pocket(int x, int y, String type) {
         super(x, y);
-        this.type = type;
+        this.type = changer(type);
     }
 }
 
@@ -321,15 +291,13 @@ public class Main {
                     }
                     break;
                 case 'B' :
-                    int itemIdx = getItem(new Location(x,y));
-                    player.setItem(Item.items[itemIdx]);
+                    player.setItem(getItem(new Location(x,y)));
                     board[x][y] = '.';
                     break;
                 case '.' :
                     break;
                 default :
-                    int idx = getMonster(new Location(x,y));
-                    Monster m = Monster.monsters[idx];
+                    Monster m = getMonster(new Location(x,y));
                     if (fight(m, player)) {
                         player.getExp(m.exp);
                         board[x][y] = '.';
@@ -417,22 +385,18 @@ public class Main {
         }
     }
 
-    public static int getItem (Location lc) {
-        for (int i=0;i<Item.items.length;i++) {
-            if (locMatch(lc, Item.items[i].loc)) {
-                return i;
-            }
+    public static Item getItem (Location lc) {
+        for (Item it : Item.items) {
+            if (locMatch(it.loc, lc)) return it;
         }
-        return -1;
+        return null;
     }
 
-    public static int getMonster (Location lc) {
-        for (int i=0;i<Monster.monsters.length;i++) {
-            if (locMatch(Monster.monsters[i].loc, lc)) {
-                return i;
-            }
+    public static Monster getMonster (Location lc) {
+        for (Monster m : Monster.monsters) {
+            if (locMatch(lc, m.loc)) return m;
         }
-        return -1;
+        return null;
     }
 
     public static boolean locMatch (Location l1, Location l2) {
