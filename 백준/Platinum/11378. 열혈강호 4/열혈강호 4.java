@@ -32,13 +32,21 @@ public class Main {
         takes = new int[work_S+1];
         visited = new int[work_S+1];
         int count , result = 0;
-        for (person = 1; person <=people;person++) {
+        K: for (person = 1; person <=people;person++) {
             stack++;
+            for (int work : load.get(person)) {
+                if (takes[work] == 0) {
+                    takes[work] = person;
+                    result++;
+                    continue K;
+                }
+            }
+
             for (int work : load.get(person)) {
                 if (visited[work] == stack) continue;
                 visited[work] = stack;
 
-                if (takes[work] == 0 || dfs(takes[work])) {
+                if (dfs(takes[work])) {
                     takes[work] = person;
                     result++;
                     break;
