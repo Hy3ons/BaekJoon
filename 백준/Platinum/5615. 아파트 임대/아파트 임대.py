@@ -2,25 +2,8 @@ import sys
 
 check = [2,3,5,7,11,13,17]
 
-def powing (a, times, MOD) :
-    if times == 0 :
-        return 0
-
-    times = int(times)
-
-    times -= 1
-    result = a
-    while times > 0 :
-        if times & 1 :
-            result = (result * a) % MOD
-
-        a = (a * a) % MOD
-
-        times >>= 1
-    return result
-
 def mill (P, a, k, d) :
-    temp = powing(a, d, P)
+    temp = pow(int(a), int(d), int(P))
     if (temp - 1) % P == 0 :
         return True
 
