@@ -1,8 +1,7 @@
 import math
-import random
 import sys
 
-check = [2,3,5,7,11,13,17,19,23,29,31,37,41,61]
+check = [2,3,5,7,11,13,17]
 
 def powing (a, times, MOD) :
     if times == 0 :
@@ -68,10 +67,10 @@ def nicePrime (P) :
 
 result = 0
 
-length = int(sys.stdin.readline().rstrip())
-list = [int(sys.stdin.readline().rstrip()) for i in range(length)]
+length = int(sys.stdin.readline())
 
-for P in list :
+for i in range(length) :
+    P = int(sys.stdin.readline())
     if P < 4 :
         result+= 1
         continue
