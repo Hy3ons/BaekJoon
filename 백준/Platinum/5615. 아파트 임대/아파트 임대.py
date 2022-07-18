@@ -11,7 +11,7 @@ def powing (a, times, MOD) :
     times -= 1
     result = a
     while times > 0 :
-        if times % 2 == 1 :
+        if times & 1 :
             result = (result * a) % MOD
 
         a = (a * a) % MOD
