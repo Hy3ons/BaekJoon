@@ -1,4 +1,3 @@
-import math
 import sys
 
 check = [2,3,5,7,11,13,17]
@@ -7,17 +6,17 @@ def powing (a, times, MOD) :
     if times == 0 :
         return 0
 
+    times = int(times)
+
     times -= 1
     result = a
     while times > 0 :
         if times % 2 == 1 :
-            result *= a
-            result %= MOD
+            result = (result * a) % MOD
 
-        a *= a
-        a %= MOD
+        a = (a * a) % MOD
 
-        times //= 2
+        times >>= 1
     return result
 
 def mill (P, a, k, d) :
@@ -29,8 +28,8 @@ def mill (P, a, k, d) :
         if (temp + 1) % P == 0:
             return True
 
-        temp *= temp
-        temp %= P
+        temp = (temp * temp) % P
+    return False
 
 
 def isPrime (P) :
@@ -51,19 +50,6 @@ def isPrime (P) :
         if not(mill(P, a, k, d)) :
             return False
     return True
-
-def nicePrime (P) :
-    if P == 2 :
-        return True
-
-    if P % 2 == 0 :
-        return False
-
-    for i in range(3, int(math.sqrt(P)+1), 2) :
-        if P % i == 0 :
-            return False
-    return True
-
 
 result = 0
 
