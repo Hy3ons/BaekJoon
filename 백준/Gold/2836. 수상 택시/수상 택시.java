@@ -18,48 +18,42 @@ public class Main {
         int testcase = Integer.parseInt(st.nextToken());
         int goal = Integer.parseInt(st.nextToken());
 
-        HashMap<Integer, Integer> hm = new HashMap<>();
-        HashSet<Integer> hs = new HashSet<>();
+        ArrayList<Line> lines = new ArrayList<>();
+
         for (int i=0;i<testcase;i++) {
             st = new StringTokenizer(br.readLine());
             int left = Integer.parseInt(st.nextToken());
             int right = Integer.parseInt(st.nextToken());
 
             if (left > right) {
-                if (!hm.containsKey(left)) {
-                    hm.put(left, 1);
-                } else {
-                    hm.put(left, hm.get(left)+1);
-                }
-                if (!hm.containsKey(right)) {
-                    hm.put(right, -1);
-                } else {
-                    hm.put(right, hm.get(right)-1);
-                }
-                hs.add(left);
-                hs.add(right);
+                lines.add(new Line(right, left));
             }
         }
-
-        ArrayList<Integer> numbers = new ArrayList<>(hs);
-        Collections.sort(numbers);
+        long result = goal;
+        lines.sort(new Comparator<Line>() {
+            @Override
+            public int compare(Line o1, Line o2) {
+                return Integer.compare(o1.left, o2.left);
+            }
+        });
 
         // 앞의 손님들이 현재 내위치 뒤로 이동하지 않아도 된다는 확신이 있을때
         // 내 현재 손님들을 모두 역주행하면서 도착시켜주면 된다.
+        int nowLeft = 0;
+        int nowRight = 0;
 
-        long result = goal;
-        int min = Integer.MAX_VALUE;
-        int weight = 0;
-        for (int num : numbers) {
-            int temp = hm.get(num);
-            weight+= temp;
-            if (weight == 0) {
-                result += ((long)num - min) * 2;
-                min = Integer.MAX_VALUE;
-            } else if (temp <0) {
-                min = Math.min(min, num);
+        for (int i=0;i<lines.size();i++) {
+            if (nowRight >= lines.get(i).left) {
+                nowRight = Math.max(lines.get(i).right, nowRight);
+            } else {
+                result += ( (long) nowRight - nowLeft) * 2;
+                nowLeft = lines.get(i).left;
+                nowRight = lines.get(i).right;
             }
+            if (i == lines.size()-1)
+                result += ( (long) nowRight - nowLeft) * 2;
         }
+
         System.out.println(result);
 
     }
