@@ -1,10 +1,10 @@
-# [Platinum III] K번째 수 - 7469 
+# [Platinum II] K번째 수 - 7469 
 
 [문제 링크](https://www.acmicpc.net/problem/7469) 
 
 ### 성능 요약
 
-메모리: 59128 KB, 시간: 1116 ms
+메모리: 97492 KB, 시간: 924 ms
 
 ### 분류
 
