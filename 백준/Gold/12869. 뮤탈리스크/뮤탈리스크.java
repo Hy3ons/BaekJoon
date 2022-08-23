@@ -20,7 +20,7 @@ public class Main {
         for(int[][] arr : dp) for (int[] ar : arr) Arrays.fill(ar, INF);
 
         dp[init[0]][init[1]][init[2]] = 0;
-        for (int i=0;i<30;i++) cycling(i);
+        for (int i=0;i<15;i++) cycling(i);
         System.out.println(dp[0][0][0]);
     }
 
