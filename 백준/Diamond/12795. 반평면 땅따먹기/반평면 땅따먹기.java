@@ -16,19 +16,13 @@ class Node {
     }
 
     public void setMid () {
-        mid = (s + e) / 2;
-        if ((s + e) < 0 && -(s + e) % 2== 1) mid--;
+        mid = (long) Math.floor((s + e) / 2.0);
     }
 
     public void summonNode() {
-        left = new Node();
-        right = new Node();
-        left.s = s;
-        left.e = mid;
+        left = new Node(s, mid);
+        right = new Node(mid+1, e);
         left.setMid();
-
-        right.s = mid+1;
-        right.e = e;
         right.setMid();
 
         left.line = right.line = line;
@@ -68,7 +62,7 @@ class Lichao {
             if (node.left == null) {
                 return node.line.function(x);
             } else {
-                return Math.max(node.line.function(x), query(node.left, x)); 
+                return Math.max(node.line.function(x), query(node.left, x));
             }
         } else {
             if (node.right == null) {
@@ -83,8 +77,6 @@ class Lichao {
             node.line = line;
             return;
         }
-
-//        System.out.println(String.format("구간 : [%d, %d] 탐색", node.s, node.e));
 
         boolean L = node.line.function(node.s) <= line.function(node.s)
                 , R = node.line.function(node.e) <= line.function(node.e);
@@ -146,7 +138,6 @@ public class Main {
         int queries = Integer.parseInt(br.readLine());
 
         Lichao tree = new Lichao();
-//        System.out.println(Line.compare(new Line(0, 100), new Line(0, 200), 0));
 
         while(queries-->0) {
             st = new StringTokenizer(br.readLine());
