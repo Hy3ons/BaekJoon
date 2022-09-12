@@ -67,8 +67,9 @@ def main():
     for _ in range(int(input().rstrip())):
         value = int(input().rstrip())
         if value == 4:
-            print(1)
+            sys.stdout.write('1\n')
             continue
         idx = (value >> 1) - 1
-        print(((c[idx] - same[idx]) >> 1 ) + same[idx])
+        sys.stdout.write(str(((c[idx] - same[idx]) >> 1 ) + same[idx])+'\n')
+    sys.stdout.flush()
 main()
