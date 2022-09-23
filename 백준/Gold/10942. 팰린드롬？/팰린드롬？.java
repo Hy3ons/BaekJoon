@@ -13,7 +13,7 @@ public class Main {
             arr[i] = Integer.parseInt(st.nextToken());
         }
 
-        boolean[][] preset = new boolean[N+1][N+1];
+        boolean[][] preset = new boolean[N][N];
 
         for (int i=0;i<arr.length;i++) {
             boolean n = true;
@@ -21,7 +21,7 @@ public class Main {
                 if (n && arr[l] == arr[r]) {
                     preset[l][r] = n;
                 } else {
-                    n = false;
+                    break;
                 }
             }
         }
@@ -32,7 +32,7 @@ public class Main {
                 if (n && arr[l] == arr[r]) {
                     preset[l][r] = n;
                 } else {
-                    n = false;
+                    break;
                 }
             }
         }
