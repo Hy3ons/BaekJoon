@@ -60,10 +60,5 @@ public class Main {
             r[node]++;
         } else b[node]++;
     }
-    public static void pop(int node) {
-        if (color[node] == 1) {
-            r[node]--;
-        } else b[node]--;
-
-    }
+   
 }
