@@ -61,21 +61,21 @@ public class Main {
                 v = 0;
 
                 for (int i= query.left-1;i< query.right;i++) {
-                    add(arr[i]);
+                    if (num[arr[i]]++ == 0) v++;
                 }
                 answer[query.idx] = v;
             } else {
                 for (int i=r;i< query.right;i++) {
-                    add(arr[i]);
+                    if (num[arr[i]]++ == 0) v++;
                 }
 
                 if (l < query.left) {
                     for (int i=l-1;i< query.left-1;i++) {
-                        pop(arr[i]);
+                        if (num[arr[i]]--==1) v--;
                     }
                 } else {
                     for (int i= query.left-1;i<l-1;i++) {
-                        add(arr[i]);
+                        if (num[arr[i]]++ == 0) v++;
                     }
                 }
                 answer[query.idx] = v;
@@ -90,15 +90,4 @@ public class Main {
         bw.flush();
     }
     public static int v;
-    public static void add (int n) {
-        if (num[n]++ == 0) {
-            v++;
-        }
-    }
-
-    public static void pop (int n) {
-        if (num[n]--==1) {
-            v--;
-        }
-    }
 }
