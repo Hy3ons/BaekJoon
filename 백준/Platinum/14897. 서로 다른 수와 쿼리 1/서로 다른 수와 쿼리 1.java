@@ -8,7 +8,7 @@ class Query {
         left = l;
         right = r;
         idx = i;
-        start = left/ 1000;
+        start = left/ 2000;
     }
 }
 
