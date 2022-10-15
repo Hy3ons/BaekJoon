@@ -94,7 +94,6 @@ public class Main {
                     if (dp[i][n1] != dp[i][n2]) {
                         n1 = dp[i][n1];
                         n2 = dp[i][n2];
-                        continue C;
                     }
                 }
                 break;
