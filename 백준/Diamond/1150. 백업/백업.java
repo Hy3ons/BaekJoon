@@ -35,8 +35,6 @@ public class Main {
     
     for (int i=0;i<N;i++) location.add(Long.parseLong(br.readLine()));
     
-    Collections.sort(location);
-  
     PriorityQueue<Pair> pq = new PriorityQueue<>(new Comparator<Pair>() {
       @Override
       public int compare(Pair o1, Pair o2) {
