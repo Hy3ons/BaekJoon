@@ -1,10 +1,10 @@
-# [Ruby V] Fast Spanning Tree - 18473 
+# [Ruby IV] Fast Spanning Tree - 18473 
 
 [문제 링크](https://www.acmicpc.net/problem/18473) 
 
 ### 성능 요약
 
-메모리: 452260 KB, 시간: 5352 ms
+메모리: 446028 KB, 시간: 4996 ms
 
 ### 분류
 
