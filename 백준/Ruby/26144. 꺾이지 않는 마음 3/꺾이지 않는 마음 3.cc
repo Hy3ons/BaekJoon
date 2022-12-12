@@ -1,6 +1,6 @@
 #include<bits/stdc++.h>
 #define MAX 1010101
-#define MAX_T 7070707
+#define MAX_T 4040404
 #define INF 4e18
 #define INF2 -400000000000
 
