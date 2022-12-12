@@ -208,15 +208,15 @@ vector<line> dragons;
 
 int main() {
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
-    // freopen("D.in", "r", stdin);
-
     cin >> N;
 
     ll a, b;
 
+    dragons.resize(N);
+
     for (int i=0;i<N;i++) {
         cin >> a>> b;
-        dragons.push_back({a, b, b, -1});
+        dragons[i] = {a, b, b, -1};
     }
 
     sort(dragons.begin(), dragons.end(), cmp);
@@ -245,10 +245,8 @@ int main() {
         ll right = slope->query(1, idx, N-1, 0, N-1);
         slope->update(1, 0, N-1, idx, ans.a);
 
-        adding += right;
-        kst.adds(1, 0, idx, 0, N-1, temp);
-        kst.adds(1, idx, N-1, 0, N-1, s * ans.a + ans.oriB);
-
+        adding += right + s * ans.a+ans.oriB;
+        kst.adds(1, 0, idx, 0, N-1, ans.a);
         kst.heaten(idx, N-1);
 
         kst.update(1, 0, N-1, idx, {0, INF2, INF2, -1});
