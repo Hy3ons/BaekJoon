@@ -153,10 +153,6 @@ vector<line> arr;
 vector<pp> q;
 vector<ppp> mid;
 
-bool cmp (ppp & o1, ppp & o2) {
-    return o1.x < o2.x;
-}
-
 double ans[MAX], lefts[MAX], rights[MAX];
 
 int main() {
@@ -185,7 +181,7 @@ int main() {
             mid.push_back(make_pair((lefts[i] + rights[i]) / 2.0 , i));
         }
 
-        sort(begin(mid), end(mid), cmp);
+        sort(begin(mid), end(mid));
         kst.init(arr);
 
         for (ppp & e : mid) {

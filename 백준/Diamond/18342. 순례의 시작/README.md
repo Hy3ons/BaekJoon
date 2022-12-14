@@ -4,11 +4,11 @@
 
 ### 성능 요약
 
-메모리: 5092 KB, 시간: 2116 ms
+메모리: 5092 KB, 시간: 2088 ms
 
 ### 분류
 
-이분 탐색(binary_search), 볼록 껍질을 이용한 최적화(cht), 볼록 껍질(convex_hull), 자료 구조(data_structures), 기하학(geometry), 병렬 이분 탐색(pbs), 세그먼트 트리(segtree), 트리를 사용한 집합과 맵(tree_set)
+이분 탐색(binary_search), 자료 구조(data_structures), 병렬 이분 탐색(pbs), 세그먼트 트리(segtree)
 
 ### 문제 설명
 
