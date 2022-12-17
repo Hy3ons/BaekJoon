@@ -1,4 +1,4 @@
-# [Diamond V] XOR MST - 16901 
+# [Diamond IV] XOR MST - 16901 
 
 [문제 링크](https://www.acmicpc.net/problem/16901) 
 
