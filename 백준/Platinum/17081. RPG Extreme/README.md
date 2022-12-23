@@ -1,10 +1,10 @@
-# [Platinum I] RPG Extreme - 17081 
+# [Platinum II] RPG Extreme - 17081 
 
 [문제 링크](https://www.acmicpc.net/problem/17081) 
 
 ### 성능 요약
 
-메모리: 20872 KB, 시간: 276 ms
+메모리: 20248 KB, 시간: 220 ms
 
 ### 분류
 

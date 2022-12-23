@@ -1,419 +1,306 @@
 import java.io.*;
-import java.util.StringTokenizer;
+import java.util.*;
 
-class Game {
-    public static char[][] board;
+class Hero{
+    int x, y, hp, damage, defence, level, exp, weapon, shield;
+
+    HashSet<String> acc = new HashSet<>();
+
+    public void setDamage (int d) {
+        hp = Math.max(hp-d, 0);
+    }
 }
-class Entity extends Game{
-    Location loc;
+
+class Monster{
     String name;
-
-    int power, armor;
-    int nowHealth, maxHealth;
-
-    Entity (int x, int y) {
-        loc = new Location(x,y);
-    }
-    public boolean isAlive () {
-        return nowHealth > 0;
-    }
-
-    public void setDamage (int damage) {
-        nowHealth -= damage;
-        if (nowHealth < 0)
-            nowHealth = 0;
-    }
-}
-
-class Monster extends Entity {
-    public static Monster[] monsters;
+    int attack;
+    int defence;
+    int maxHp;
+    int currentHp;
     int exp;
-    boolean isBoss;
 
-
-    Monster (int x, int y) {
-        super(x,y);
-        isBoss = board[x][y]=='M';
-    }
-
-}
-class Player extends Entity {
-    int nowExp, goalExp=5, level=1, pocket;
-    Weapon wp;
-    Armor ar;
-    Location start;
-    Player (int x, int y) {
-        super(x,y);
-        start = new Location(x,y);
-        maxHealth = nowHealth = 20;
-        power = 2;
-        armor = 2;
-    }
-    public void getExp (int exp) {
-        if (existEX())
-            exp = (int) (exp * 1.2);
-
-        nowExp += exp;
-
-        if (nowExp>=goalExp) {
-            level++;
-            maxHealth+= 5;
-            nowHealth = maxHealth;
-            power += 2;
-            armor +=2;
-
-            nowExp = 0;
-            goalExp = level*5;
-        }
-    }
-    public void setItem (Item it) {
-        if (it instanceof Weapon) {
-            wp = (Weapon) it;
-        } else if (it instanceof Armor) {
-            ar = (Armor) it;
-        } else {
-            Pocket p = (Pocket) it;
-            if (Integer.bitCount(pocket)<4) {
-                if ((pocket&(1<<p.type))==0) {
-                    pocket |= 1<<p.type;
-                }
-            }
-        }
-    }
-    public void inTrap () {
-        if (existDX()) setDamage(1);
-        else setDamage(5);
+    Monster(String n, int a, int d, int m, int e) {
+        name = n;
+        attack = a;
+        defence = d;
+        currentHp = maxHp = m;
+        exp = e;
     }
 
-    public int getPower() {
-        int result = wp == null ? 0 : wp.power;
-        result += this.power;
-        return result;
+    public void setDamage (int d) {
+        currentHp = Math.max(currentHp-d, 0);
     }
 
-    public boolean existRe () {
-        if ((pocket&(1<<1))!=0) {
-            pocket &= ~(1<<1);
-            return true;
-        }
-        return false;
-    }
-    public boolean existDX () {
-        return (pocket&(1<<4)) != 0;
-    }
-    public boolean existHU () {
-        return (pocket&(1<<5)) != 0;
-    }
-    public boolean existCO () {
-        return (pocket&(1<<2)) != 0;
-    }
-    public boolean existEX () {
-        return (pocket&(1<<3)) != 0;
-    }
-    public boolean existHR () {
-        return (pocket&1) != 0;
-    }
-    public int getArmor () {
-        int result = ar == null ? 0 : ar.armor;
-        result += this.armor;
-        return result;
-    }
-    public void heal (int heal) {
-        nowHealth += heal;
-        if (nowHealth > maxHealth)
-            nowHealth = maxHealth;
-
-    }
 }
 
 class Item {
-    public static Item[] items;
-    Location loc;
+    String type;
+    String what;
 
-    Item(int x, int y) {
-        loc = new Location(x,y);
-    }
-}
-
-class Weapon extends Item {
-    int power;
-    Weapon(int x, int y, int power) {
-        super(x, y);
-        this.power = power;
-    }
-}
-class Armor extends Item {
-    int armor;
-    Armor(int x, int y, int armor) {
-        super(x, y);
-        this.armor = armor;
-    }
-}
-class Pocket extends Item {
-    int type;
-    public static int changer (String type) {
-        switch (type) {
-            case "HR" :
-                return 0;
-            case "RE" :
-                return 1;
-            case "CO" :
-                return 2;
-            case "EX" :
-                return 3;
-            case "DX" :
-                return 4;
-            case "HU" :
-                return 5;
-            case "CU" :
-                return 6;
-        }
-        return -1;
-    }
-    Pocket(int x, int y, String type) {
-        super(x, y);
-        this.type = changer(type);
-    }
-}
-
-class Location {
-    int x, y;
-
-    Location(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-    Location () {
-        this(0,0);
+    Item(String t, String w) {
+        type = t;
+        what = w;
     }
 }
 
 public class Main {
-    public static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    public static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-    public static int mki(String s) {
-        return Integer.parseInt(s);
+    static int N, M, turn;
+    static int startX, startY, maxHP, maxDamege, maxDefence;
+    static String map[][];
+    static Monster mon[][];
+    static Item item[][];
+
+    static int dx[] = {0, 0, -1, 1};
+    static int dy[] = {-1, 1, 0, 0};
+    static Hero hero;
+    public static boolean checkingAcc(String acc) {
+        return hero.acc.contains(acc);
     }
-    
+
+    public static void levelUp(int exp) {
+        hero.exp += exp;
+
+        if(hero.exp >= (5 * hero.level)) {
+            hero.level++;
+            hero.exp = 0;
+
+            maxHP += 5;
+            hero.hp = maxHP;
+            hero.damage += 2;
+            hero.defence += 2;
+        }
+    }
+
+    public static void heroWin() {
+        int exp = mon[hero.x][hero.y].exp;
+        if(checkingAcc("EX")) exp = (int) (exp * 1.2);
+        levelUp(exp);
+
+        if(checkingAcc("HR")) {
+            hero.hp = Math.min(maxHP, hero.hp + 3);
+        }
+    }
+
+
     public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        int height = mki(st.nextToken());
-        int width = mki(st.nextToken());
+        StringBuilder sb = new StringBuilder();
 
-        char[][] board = new char[height][];
-        Game.board = board;
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        int K = 0;
+        int L = 0;
 
-        for (int i=0;i<height;i++)
-            board[i] = br.readLine().toCharArray();
-
-        char[] input = br.readLine().toCharArray();
-        Player player = null;
-        //주인공 캐릭터를 만듭니다.
-
-        K: for (int i=0;i<height;i++) {
-            for (int j=0;j<width;j++) {
-                if (board[i][j]=='@') {
-                    board[i][j]='.';
-                    player = new Player(i, j);
-                    break K;
+        map = new String[N][M];
+        for(int i = 0; i < N; i++) {
+            String s = br.readLine();
+            for(int j = 0; j < M; j++) {
+                map[i][j] = ""+s.charAt(j);
+                if(map[i][j].equals("&") || map[i][j].equals("M")) {
+                    K++;
+                }
+                if(map[i][j].equals("B")) {
+                    L++;
+                }
+                if(map[i][j].equals("@")) {
+                    hero = new Hero();
+                    hero.x = i;
+                    hero.y = j;
+                    startX = i;
+                    startY = j;
+                    map[i][j] = ".";
                 }
             }
         }
 
-        int itemCount = 0, monsterCount = 0;
+        String movement = br.readLine();
 
-        for (int i=0;i<height;i++) {
-            for (int j=0;j<width;j++) {
-                if (board[i][j]=='B') {
-                    itemCount++;
-                } else if (board[i][j]=='&'|| board[i][j]=='M') {
-                    monsterCount++;
-                }
-            }
+        mon = new Monster[N][M];
+        while (K --> 0) {
+            st = new StringTokenizer(br.readLine());
+            int r = Integer.parseInt(st.nextToken()) - 1;
+            int c = Integer.parseInt(st.nextToken()) - 1;
+            String name = st.nextToken();
+            int a = Integer.parseInt(st.nextToken());
+            int d = Integer.parseInt(st.nextToken());
+            int maxhp = Integer.parseInt(st.nextToken());
+            int ex = Integer.parseInt(st.nextToken());
+
+            mon[r][c] = new Monster(name, a, d, maxhp, ex);
         }
 
-        Item.items = new Item[itemCount];
-        Monster.monsters = new Monster[monsterCount];
+        item = new Item[N][M];
+        while (L --> 0) {
+            st = new StringTokenizer(br.readLine());
+            int r = Integer.parseInt(st.nextToken()) - 1;
+            int c = Integer.parseInt(st.nextToken()) - 1;
+            String t = st.nextToken();
+            String s = st.nextToken();
 
-        for (int i=0;i<monsterCount;i++) {
-            String[] s = br.readLine().split(" ");
-
-            int x = mki(s[0])-1;
-            int y = mki(s[1])-1;
-
-            Monster m = new Monster(x,y);
-            Monster.monsters[i] = m; m.name = s[2];
-            m.power = mki(s[3]); m.armor = mki(s[4]);
-            m.nowHealth = m.maxHealth = mki(s[5]);
-            m.exp = mki(s[6]);
+            item[r][c] = new Item(t, s);
         }
-        for (int i=0;i<itemCount;i++) {
-            String[] s = br.readLine().split(" ");
-            int x = mki(s[0]) - 1;
-            int y = mki(s[1]) - 1;
-            char type = s[2].charAt(0);
-            if (type=='W') {
-                Item.items[i] = new Weapon(x,y, mki(s[3]));
-            } else if (type=='A') {
-                Item.items[i] = new Armor(x,y, mki(s[3]));
-            } else {
-                Item.items[i] = new Pocket(x,y, s[3]);
-            }
-        }
+        //input end
 
-        for (int i = 0;i < input.length;i++) {
+        maxHP = 20;
+        maxDamege = 2;
+        maxDefence = 2;
+        hero.exp = 0;
+        hero.hp = 20;
+        hero.damage = 2;
+        hero.defence = 2;
+        hero.level = 1;
+        hero.weapon = 0;
+        hero.shield = 0;
+
+        turn = 0;
+
+        boolean hpZeroTrap = false;
+        boolean monsterZero = false;
+        boolean heroFinalWin = false;
+
+        G: for(int i = 0; i < movement.length(); i++) {
+            char current = movement.charAt(i);
             turn++;
-            int value = move(input[i]);
-            int x = player.loc.x + dx[value];
-            int y = player.loc.y + dy[value];
 
-            //무시되는 경우를 먼저 접근한다.
-            if (x==-1||x==height||y==-1||y==width||board[x][y]=='#') {
-                x = player.loc.x;
-                y = player.loc.y;
+            int currentX = hero.x;
+            int currentY = hero.y;
+
+            if(current == 'L') {
+                hero.x += dx[0];
+                hero.y += dy[0];
+            }else if(current == 'R'){
+                hero.x += dx[1];
+                hero.y += dy[1];
+            }else if(current == 'U') {
+                hero.x += dx[2];
+                hero.y += dy[2];
+            }else {
+                hero.x += dx[3];
+                hero.y += dy[3];
             }
 
-            player.loc.x = x;
-            player.loc.y = y;
-
-            switch (board[x][y]) {
-                case '^' :
-                    player.inTrap();
-                    if (!player.isAlive()) {
-                        if (player.existRe()) {
-                            useRe(player);
-                        } else {
-                            end(player);
-                            bw.write("YOU HAVE BEEN KILLED BY SPIKE TRAP..");
-                            bw.flush();
-                            return;
-                        }
-                    }
-                    break;
-                case 'B' :
-                    player.setItem(getItem(new Location(x,y)));
-                    board[x][y] = '.';
-                    break;
-                case '.' :
-                    break;
-                default :
-                    Monster m = getMonster(new Location(x,y));
-                    if (fight(m, player)) {
-                        player.getExp(m.exp);
-                        board[x][y] = '.';
-                        if (player.existHR()) player.heal(3);
-                        //보스일 경우 바로 끝내기
-                        if (m.isBoss) {
-                            end(player);
-                            bw.write("YOU WIN!");
-                            bw.flush();
-                            return;
-                        }
-                    } else {
-                        //졋다.
-                        if (player.existRe()) {
-                            m.nowHealth = m.maxHealth;
-                            useRe(player);
-                        } else {
-                            end(player);
-                            bw.write(String.format("YOU HAVE BEEN KILLED BY %s..",m.name));
-                            bw.flush();
-                            return;
-                        }
-                    }
+            if(hero.x < 0 || hero.x >= N || hero.y < 0 || hero.y >= M || map[hero.x][hero.y].equals("#")) {
+                hero.x = currentX;
+                hero.y = currentY;
             }
-        }
-        end(player);
-        bw.write("Press any key to continue.");
-        bw.flush();
 
-    }
-    public static void useRe (Player p) {
-        p.loc.x = p.start.x;
-        p.loc.y = p.start.y;
-        p.nowHealth = p.maxHealth;
-    }
-    public static int turn;
-    public static void end(Player p) throws IOException {
-        if (p.isAlive()) {
-            for (int i=0;i<Game.board.length;i++) {
-                for (int j=0;j<Game.board[0].length;j++) {
-                    if (i==p.loc.x&&j==p.loc.y) bw.write('@');
-                    else bw.write(Game.board[i][j]);
+            if(map[hero.x][hero.y].equals("B")) {
+                Item item1 = new Item(item[hero.x][hero.y].type, item[hero.x][hero.y].what);
+
+                if(item1.type.equals("W") || item1.type.equals("A")) {
+                    int s = Integer.parseInt(item1.what);
+
+                    if(item1.type.equals("W")) {
+                        hero.weapon = s;
+                    }else{
+                        hero.shield = s;
+                    }
+                }else{
+                    String tempAcc = item1.what;
+                    if (hero.acc.size() < 4) hero.acc.add(tempAcc);
                 }
-                bw.write('\n');
+
+                map[hero.x][hero.y] = ".";
+            } else if(map[hero.x][hero.y].equals("&") || map[hero.x][hero.y].equals("M")) {
+
+                Monster enemy = mon[hero.x][hero.y];
+                boolean isBoss = map[hero.x][hero.y].equals("M");
+
+                for (int j=1;true;j++) {
+                    int damage = hero.damage + hero.weapon;
+                    if (j == 1 && hero.acc.contains("CO")) {
+                        if (hero.acc.contains("DX")) {
+                            damage *= 3;
+                        } else {
+                            damage *= 2;
+                        }
+                    }
+
+                    enemy.setDamage(Math.max(damage - enemy.defence, 1));
+
+                    // 적이 뒤짐
+                    if (enemy.currentHp == 0) {
+                        heroWin();
+                        map[hero.x][hero.y] = ".";
+
+                        if (isBoss) {
+                            heroFinalWin = true;
+                            break G;
+                        } else {
+                            break;
+                        }
+                    }
+
+                    hero.setDamage(Math.max(enemy.attack - hero.defence - hero.shield, 1));
+
+                    if (j == 1 && hero.acc.contains("HU") && isBoss) {
+                        hero.hp = maxHP;
+                    }
+
+                    //주인공 뒤짐
+                    if (hero.hp == 0) {
+                        if (hero.acc.contains("RE")) {
+                            hero.acc.remove("RE");
+                            hero.hp = maxHP;
+                            hero.x = startX;
+                            hero.y = startY;
+
+                            enemy.currentHp = enemy.maxHp;
+                            break;
+                        } else {
+                            monsterZero = true;
+                            break G;
+                        }
+                    }
+                }
+
+            } else if (map[hero.x][hero.y].equals("^")) {
+                hero.setDamage(hero.acc.contains("DX") ? 1 : 5);
+
+                if (hero.hp == 0) {
+                    if (hero.acc.contains("RE")) {
+                        hero.acc.remove("RE");
+                        hero.hp = maxHP;
+                        hero.x = startX;
+                        hero.y = startY;
+                    } else {
+                        hpZeroTrap = true;
+                        break;
+                    }
+                }
             }
+
+        }
+
+        if(hero.hp != 0){
+            map[hero.x][hero.y] = "@";
+        }
+
+        for(int i = 0; i < N; i++) {
+            for(int j = 0; j < M; j++) {
+                sb.append(map[i][j]);
+            }
+            sb.append('\n');
+        }
+
+        sb.append("Passed Turns : ").append(turn).append('\n');
+        sb.append("LV : ").append(hero.level).append('\n');
+        sb.append("HP : ").append(hero.hp).append("/").append(maxHP).append('\n');
+        sb.append("ATT : ").append(hero.damage).append("+").append(hero.weapon).append('\n');
+        sb.append("DEF : ").append(hero.defence).append("+").append(hero.shield).append('\n');
+        sb.append("EXP : ").append(hero.exp).append("/").append(hero.level * 5).append('\n');
+
+        if(hpZeroTrap) {
+            sb.append("YOU HAVE BEEN KILLED BY SPIKE TRAP..").append('\n');
+        } else if(monsterZero) {
+            sb.append("YOU HAVE BEEN KILLED BY ").append(mon[hero.x][hero.y].name).append("..").append('\n');
+        } else if(heroFinalWin) {
+            sb.append("YOU WIN!").append('\n');
         } else {
-            for (int i=0;i<Game.board.length;i++) {
-                for (int j=0;j<Game.board[0].length;j++) {
-                    bw.write(Game.board[i][j]);
-                }
-                bw.write('\n');
-            }
+            sb.append("Press any key to continue.").append('\n');
         }
-        bw.write("Passed Turns : ");
-        bw.write(turn+"\n");
 
-        bw.write("LV : ");
-        bw.write(p.level+"\n");
-        bw.write(String.format("HP : %d/%d\n", p.nowHealth, p.maxHealth));
-        bw.write(String.format("ATT : %d+%d\n", p.power, p.wp==null ? 0 : p.wp.power));
-        bw.write(String.format("DEF : %d+%d\n", p.armor, p.ar==null ? 0 : p.ar.armor));
-        bw.write(String.format("EXP : %d/%d\n", p.nowExp, p.goalExp));
+        System.out.println(sb);
     }
-    public static boolean fight (Monster m, Player p) {
-        for (int i=1;;i++) {
-            int damage = p.getPower();
-            if (i==1) {
-                if (p.existCO()) {
-                    if (p.existDX()) {
-                        damage *= 3;
-                    } else {
-                        damage *= 2;
-                    }
-                }
-            }
-
-            m.setDamage(Math.max(1, damage - m.armor));
-            if (!m.isAlive()) return true;
-
-            p.setDamage(Math.max(1, m.power - p.getArmor()));
-            if (i==1 && m.isBoss && p.existHU())
-                p.nowHealth = p.maxHealth;
-
-            if (!p.isAlive()) return false;
-        }
-    }
-
-    public static Item getItem (Location lc) {
-        for (Item it : Item.items) {
-            if (locMatch(it.loc, lc)) return it;
-        }
-        return null;
-    }
-
-    public static Monster getMonster (Location lc) {
-        for (Monster m : Monster.monsters) {
-            if (locMatch(lc, m.loc)) return m;
-        }
-        return null;
-    }
-
-    public static boolean locMatch (Location l1, Location l2) {
-        return l1.x == l2.x && l1.y == l2.y;
-    }
-    public static int[] dx = {0,0,-1,1} , dy = {-1,1,0,0};
-    public static int move (char move) {
-        switch (move) {
-            case 'L' :
-                return 0;
-            case 'R' :
-                return 1;
-            case 'U' :
-                return 2;
-            default :
-                return 3;
-        }
-    }
-
 }
