@@ -45,9 +45,9 @@ void dnc (int al, int ar, int bl, int br) {
     for (int i=ar;i>mid;i--) {
         for (int j=br;j>=bl;j--) {
             if (a[i] == b[j]) {
-                dp2[j+1] = max(bas[j+2] +1 , dp2[j+2]);
+                dp2[j] = max(bas[j+1] +1 , dp2[j+1]);
             } else {
-                dp2[j+1] = max(dp2[j+2], bas[j+1]);
+                dp2[j] = max(dp2[j+1], bas[j]);
             }
         }
 
@@ -55,8 +55,8 @@ void dnc (int al, int ar, int bl, int br) {
     }
 
     for (int i=bl;i<=br+1;i++) {
-        if (mx < dp[i] + dp2[i+1]) {
-            mx = dp[i] + dp2[i+1];
+        if (mx < dp[i] + dp2[i]) {
+            mx = dp[i] + dp2[i];
             k = i;
         }
     }
