@@ -21,14 +21,10 @@ int main () {
 
         for (int j=0;j<N;j++) {
             if (arr[i][j] == 'Y') {
-                if (!checked[j]) {
-                    checked[j] = 1;
-                    cnt++;
-                }
+                checked[j] = 1;
 
                 for (int k=0;k<N;k++) {
-                    if (i != k && j != k && arr[j][k] == 'Y' && !checked[k]) {
-                        cnt++;
+                    if (i != k && j != k && arr[j][k] == 'Y') {
                         checked[k] = 1;
                     }
                 }
@@ -36,6 +32,7 @@ int main () {
             }
         }
 
+        for (int i : checked) cnt += i;
         mx = max(mx, cnt);
     }
 
