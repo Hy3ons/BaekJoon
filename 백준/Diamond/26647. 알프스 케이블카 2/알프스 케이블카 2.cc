@@ -19,7 +19,7 @@ int calCross (int j, int i) {
     int left = i, right = N;
 
     while(true) {
-        int mid = (left + right) / 2;
+		int mid = left + right >> 1;
 
         if (cost(j, mid) > cost(i, mid)) {
             right = mid;
@@ -59,10 +59,7 @@ void push (int i) {
 }
 
 void optimized (const lint X) {
-	// fill(dp, dp+MAX, 8e18);
-    // fill(re, re+MAX, 1e10);
-	dp[0] = 0;
-	re[0] = 0;
+	dp[0] = re[0] = 0;
 
     deck.clear();
     deck.push_back(cross(0));
@@ -86,28 +83,10 @@ void optimized (const lint X) {
         if (i == N-1) return;
         push(i);
     }
-
-	// for (int i=1;i<N;i++) {
-
-    //     for (int j=0;j<i;j++) {
-    //         lint temp = cost(j, i) + X;
-
-    //         if (dp[i] > temp) {
-    //             dp[i] = temp;
-    //             re[i] = re[j] + 1;
-    //         } else if (dp[i] == temp){
-    //             re[i] = min(re[i], re[j]+1);
-    //         }
-    //     }
-    // }
-
-
 }
 
 int main() {
     cin.tie(nullptr); ios_base::sync_with_stdio(false);
-    // freopen("C:\\Users\\skyho\\Desktop\\src\\test.in", "r", stdin);
-
     cin >> N >> K;
 
     for (int i=0;i<N;i++) {
@@ -145,20 +124,15 @@ int main() {
 	} else {
 		optimized(left);
 
-
 		lint leftUsed = re[N-1];
  		lint leftAns = dp[N-1] - (re[N-1] * left);
-
 
 		lint dist = abs(leftUsed - rightUsed);
 		lint dAns = abs(rightAns - leftAns);
 
-		assert(dAns % dist == 0);
 		lint da = dAns / dist;
-		lint realAnswer = rightAns - (da) * abs(K - rightUsed);
+		lint realAnswer = rightAns - da * abs(K - rightUsed);
 
 		cout << realAnswer;
 	}
-
-
 }
