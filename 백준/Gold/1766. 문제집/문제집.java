@@ -1,10 +1,5 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.PriorityQueue;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
 public class Main {
     public static void main(String[] args) throws Exception {
@@ -12,52 +7,39 @@ public class Main {
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
         StringTokenizer st =new StringTokenizer(br.readLine());
 
-        int testcase = Integer.parseInt(st.nextToken());
-        int loadLength = Integer.parseInt(st.nextToken());
+        int N = Integer.parseInt(st.nextToken()), M = Integer.parseInt(st.nextToken());
 
-        int[] targeted = new int[testcase];
-        ArrayList<ArrayList<Integer>> al = new ArrayList<>(testcase);
-        for (int i=0;i<testcase;i++) al.add(new ArrayList<>());
+        int[] indegree = new int[N+1];
 
-        for (int i=0;i<loadLength;i++) {
+        ArrayList<ArrayList<Integer>> adj = new ArrayList<>(N+1);
+        for (int i=0;i<=N;i++) adj.add(new ArrayList<>());
+
+        for (int i=0;i<M;i++) {
             st = new StringTokenizer(br.readLine());
-            int from = Integer.parseInt(st.nextToken())-1;
-            int to = Integer.parseInt(st.nextToken())-1;
+            int from = Integer.parseInt(st.nextToken());
+            int to = Integer.parseInt(st.nextToken());
 
-            al.get(from).add(to);
-            targeted[to]++;
+            adj.get(from).add(to);
+            indegree[to]++;
         }
 
-        //0부터 testcase-1까지의 노드들이 존재.
+        PriorityQueue<Integer> qu = new PriorityQueue<>();
 
-        boolean[] solved = new boolean[testcase];
-        boolean[] noqu = new boolean[testcase];
-        PriorityQueue<Integer> qu = new PriorityQueue<>(Integer::compareTo);
+        for (int i=1;i<=N;i++) {
+            if (indegree[i] == 0) qu.offer(i);
+        }
 
-        for (int i=0;i<testcase;i++) {
-            if (!solved[i]&&targeted[i]==0) {
-                solved[i] = true;
+        while(!qu.isEmpty()) {
+            int now = qu.poll();
+            bw.write(now+" ");
 
-
-                qu.offer(i);
-
-                while(!qu.isEmpty()) {
-                    int from = qu.poll();
-                    bw.write(from+1+" ");
-                    
-                    for (int k=0;k<al.get(from).size();k++) {
-                        int to = al.get(from).get(k);
-
-                        targeted[to]--;
-                        if (!solved[to]&&targeted[to]==0) {
-                            solved[to] = true;
-                            qu.offer(to);
-                        }
-                    }
+            for (int go : adj.get(now)) {
+                if (--indegree[go] == 0) {
+                    qu.offer(go);
                 }
             }
         }
-        bw.flush();
 
+        bw.flush();
     }
 }
