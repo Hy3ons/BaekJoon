@@ -3,7 +3,7 @@
 
 using namespace std;
 
-int A, B, C, K, da[6] = {1,2,0,0,4,0}, db[6] = {1,0,2,0,0,4}, dc[6] = {0,1,1,2,0,0}, dp[MAX];
+int A,B,C,K,da[]= {1,2,0,0,4,0},db[] = {1,0,2,0,0,4},dc[] = {0,1,1,2,0,0},dp[MAX];
 
 int main () {
     cin >> A >> B >> C >> K;
