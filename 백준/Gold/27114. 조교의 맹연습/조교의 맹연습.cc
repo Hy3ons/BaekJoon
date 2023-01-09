@@ -13,14 +13,13 @@ int main () {
 
     for (int i=0;i<MAX;i++) {
         for (int k=0;k<6;k++) {
-            int d = da[k] + db[k] + dc[k];
             int M = da[k] * A + db[k] * B + dc[k] * C;
 
             if (i + M >= MAX) continue;
-            dp[i + M] = min(dp[i + M], dp[i] + d);
+            dp[i + M] = min(dp[i + M], dp[i] + da[k] + db[k] + dc[k]);
         }
     }
 
-    int a = dp[K] == 1e9 ? -1 : dp[K];
-    cout << a;
+    A = dp[K] == 1e9 ? -1 : dp[K];
+    cout << A;
 }
