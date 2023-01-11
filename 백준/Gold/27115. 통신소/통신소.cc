@@ -3,18 +3,14 @@
 
 using namespace std;
 
-typedef pair<int, int> pt;
-
 queue<int> qu;
 vector<int> arr[3030];
 
-int visited[MAX], N, M, K, dx[] = {1, -1, 0, 0}, dy[] = {0,0,-1,1}, checked[MAX];
+int visited[MAX], N, M, K, dx[] = {1, -1, 0, 0}, dy[] = {0,0,-1,1};
 
 int main () {
     cin.tie(0);ios_base::sync_with_stdio(0);
     cin >> N >> M >> K;
-
-    fill(checked, checked+MAX, -1);
 
     int a, b, c;
     for (int i=0;i<K;i++) {
@@ -53,5 +49,4 @@ int main () {
     }
 
     cout << ans;
-
 }
