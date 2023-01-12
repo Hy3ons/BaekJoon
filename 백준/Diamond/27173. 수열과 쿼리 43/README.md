@@ -1,10 +1,10 @@
-# [Diamond IV] 수열과 쿼리 43 - 27173 
+# [Diamond III] 수열과 쿼리 43 - 27173 
 
 [문제 링크](https://www.acmicpc.net/problem/27173) 
 
 ### 성능 요약
 
-메모리: 27388 KB, 시간: 1020 ms
+메모리: 24236 KB, 시간: 996 ms
 
 ### 분류
 

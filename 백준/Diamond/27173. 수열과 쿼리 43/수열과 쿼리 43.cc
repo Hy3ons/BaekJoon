@@ -11,7 +11,7 @@ int N, Q;
 struct seg {
     const lint INF = 4e18;
     int cover[MAX_T], re[MAX_T], seTime[MAX_T];
-    lint mn[MAX_T], mx[MAX_T], leftSt[MAX_T], rightSt[MAX_T], add[MAX_T], putt[MAX_T];
+    lint mn[MAX_T], mx[MAX_T], leftSt[MAX_T], rightSt[MAX_T], add[MAX_T];
     lint startL;
 
 
@@ -19,30 +19,26 @@ struct seg {
         mn[n] = min(mn[n << 1], mn[n << 1 | 1]);
         mx[n] = max(mx[n << 1], mx[n << 1 | 1]);
     }
+    void clear (int n) {
+        cover[n] = 1;
+        leftSt[n] = rightSt[n] = add[n] = seTime[n]= re[n] = 0;
+    }
 
     void push (int n, int left, int right) {
         if (!re[n]) return;
         mn[n] *= cover[n]; mx[n] *= cover[n];
-        mn[n] += leftSt[n] + add[n] + putt[n];
-        mx[n] += rightSt[n] + add[n] + putt[n];
+        mn[n] += leftSt[n] + add[n];
+        mx[n] += rightSt[n] + add[n];
 
         if (left != right) {
             //should propagate
-            int c = cover[n];
-            re[n << 1] = re[n << 1 | 1] = 1;
+            if (cover[n] == 0) {
+                clear(n << 1);
+                clear(n << 1 |1);
+                cover[n<< 1] = cover[n << 1 | 1] = 0;
+            }
 
-            cover[n << 1] *= c;
-            cover[n << 1 | 1] *= c;
-            add[n << 1] *= c;
-            add[n << 1 | 1] *= c;
-            seTime[n << 1] *= c;
-            seTime[n << 1 | 1] *= c;
-            leftSt[n << 1] *= c;
-            leftSt[n << 1 | 1] *= c;
-            rightSt[n << 1] *= c;
-            rightSt[n << 1 | 1] *= c;
-            putt[n << 1] *= c;
-            putt[n << 1 | 1] *= c;
+            re[n << 1] = re[n << 1 | 1] = 1;
 
             int mid = left + right >> 1;
 
@@ -53,15 +49,10 @@ struct seg {
 
             add[n << 1] += add[n];
             add[n << 1 | 1] += add[n];
-            putt[n << 1] += putt[n];
-            putt[n << 1 | 1] += putt[n];
             seTime[n << 1] |= seTime[n];
             seTime[n << 1 | 1]  |= seTime[n];
         }
-
-        cover[n] = 1;
-        leftSt[n] = rightSt[n] = add[n] = seTime[n]= re[n] = 0;
-        putt[n] = 0;
+        clear(n);
     }
 
     void init (vector<lint> &l) {
@@ -101,12 +92,12 @@ struct seg {
 
     void sqrtQuery (int node, int s, int e, int left, int right) {
         push(node, left, right);
-        if (right < s || e < left) return;
+        if (right < s || e < left || mx[node] <= 1) return;
 
         if (s <= left && right <= e && tagCondition(node)) {
             re[node] = 1;
             cover[node] = 0;
-            putt[node] = (lint) sqrt(mx[node]);
+            add[node] = (lint) sqrt(mx[node]);
             push(node, left, right);
             return;
         }
@@ -160,9 +151,6 @@ struct seg {
 
         pull(node);
     }
-
-
-
 }seg;
 
 
