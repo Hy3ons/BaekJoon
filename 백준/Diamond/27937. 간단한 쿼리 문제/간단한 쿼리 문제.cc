@@ -52,7 +52,7 @@ struct query
     }
 };
 
-bool cmp (query o1, query o2) {
+bool cmp (query &o1, query &o2) {
     if (o1.sq != o2.sq) return o1.sq < o2.sq;
     return o1.right < o2.right;
 }
