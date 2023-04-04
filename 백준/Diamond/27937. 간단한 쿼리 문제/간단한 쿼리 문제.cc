@@ -28,7 +28,7 @@ struct seg
     }
 
     void clear () {
-        fill(tree, tree+MAX_T, 0);
+        for (int i=0;i<sts<<1;i++) tree[i] = 0;
     }
 };
 
@@ -73,7 +73,7 @@ int main () {
 
     sort(begin(queries), end(queries), cmp);
 
-    for (query q : queries) {
+    for (query &q : queries) {
         if (q.sq != sqq) {
             temp = 0;
             cnt.clear(), value.clear();
