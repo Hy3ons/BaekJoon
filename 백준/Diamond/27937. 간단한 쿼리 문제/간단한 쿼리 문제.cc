@@ -48,7 +48,7 @@ struct query
     int left, right, idx, sq;
 
     query(int left, int right, int idx) : left(left), right(right), idx(idx) {
-        sq = idx / 550;
+        sq = left / 550;
     }
 };
 
