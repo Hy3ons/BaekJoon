@@ -157,3 +157,4 @@
 | Esstree 회문 트리 공부 | 23. 5. 27 |
 | Dynamic Tree Dp, (dp Chaining optimize) | 23.XX.XX|
 | Fortune's Algorithm | 24.XX.XX |
+| Suffix Array, Lcp Array | 24.XX.XX |
